@@ -1,18 +1,21 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common'
+
+import { JsonApiController, JsonApiQuery } from 'src/utils/jsonapi'
 
 import { AuthorsService } from './authors.service'
 
 @Controller('api/v1/authors')
-export class AuthorsController {
-  constructor(private readonly svc: AuthorsService) {}
+export class AuthorsController extends JsonApiController {
+  constructor(private readonly svc: AuthorsService) {
+    super()
+    this.resourceName = 'author'
+    this.validFields = ['firstName', 'lastName', 'createdAt', 'updatedAt']
+  }
 
   @Get()
-  async list() {
+  async list(@Query() query: JsonApiQuery) {
     const authors = await this.svc.findAll()
-
-    return {
-      data: authors,
-    }
+    return super.list(query, { data: authors })
   }
 
   @Get(':id')
