@@ -8,15 +8,15 @@ import { Author } from './author.entity'
 export class AuthorsService {
   constructor(
     @InjectRepository(Author)
-    private repo: Repository<Author>,
+    private authorsRepo: Repository<Author>,
   ) {}
 
   findAll(): Promise<Author[]> {
-    return this.repo.find()
+    return this.authorsRepo.find()
   }
 
   findOne(id: string): Promise<Author> {
-    return this.repo.findOne(id)
+    return this.authorsRepo.findOne(id)
   }
 
   create(body: DeepPartial<Author>): Promise<Author> {
@@ -24,6 +24,6 @@ export class AuthorsService {
     author.firstName = body.firstName
     author.lastName = body.lastName
 
-    return this.repo.save(author)
+    return this.authorsRepo.save(author)
   }
 }

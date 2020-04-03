@@ -22,6 +22,7 @@ export class Author {
   @OneToMany(
     type => Book,
     book => book.author,
+    { onDelete: 'CASCADE' },
   )
   books: Book[]
 

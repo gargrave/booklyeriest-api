@@ -7,7 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm'
 
-import { Author } from '../authors/author.entity'
+import { Author } from 'src/authors/author.entity'
 
 @Entity()
 export class Book {
@@ -20,6 +20,7 @@ export class Book {
   @ManyToOne(
     type => Author,
     author => author.books,
+    { nullable: false },
   )
   author: Author
 
