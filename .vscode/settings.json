@@ -1,8 +1,7 @@
 {
-  "cSpell.words": [
-    "nestjs"
-  ],
+  "cSpell.ignoreRegExpList": ["bookly.*"],
+  "cSpell.words": ["nestjs", "typeorm"],
   "editor.formatOnSave": true,
   "javascript.validate.enable": false,
-  "typescript.validate.enable": true,
+  "typescript.validate.enable": true
 }
