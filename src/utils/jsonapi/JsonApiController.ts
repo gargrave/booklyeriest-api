@@ -14,10 +14,6 @@ export abstract class JsonApiController {
   protected validFields: string[] = []
   protected validIncludes: string[] = []
 
-  constructor() {
-    //
-  }
-
   @Get()
   async list(@Query() query: JsonApiQuery, rawDataPayload: RawDataPayload) {
     const { data: rawData, included: rawIncluded } = rawDataPayload

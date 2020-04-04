@@ -8,14 +8,15 @@ import { AuthorsService } from './authors.service'
 export class AuthorsController extends JsonApiController {
   constructor(private readonly svc: AuthorsService) {
     super()
+
     this.resourceName = 'author'
     this.validFields = ['firstName', 'lastName', 'createdAt', 'updatedAt']
   }
 
   @Get()
   async list(@Query() query: JsonApiQuery) {
-    const authors = await this.svc.findAll()
-    return super.list(query, { data: authors })
+    const data = await this.svc.findAll()
+    return super.list(query, { data })
   }
 
   @Get(':id')
