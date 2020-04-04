@@ -1,3 +1,11 @@
+type Diff<T, U> = T extends U ? never : T
+
+export type PartiallyOptional<T, TOptional extends keyof T> = Pick<
+  T,
+  Diff<keyof T, TOptional>
+> &
+  Partial<T>
+
 /**************************************************
  * JSON:API Spec Types
  **************************************************/
@@ -53,10 +61,31 @@ export type RawResource = {
   [key: string]: ValidJsonValue
 }
 
+export type RawDataPayload = {
+  data: any
+  included?: any
+}
+
+export type JsonApiControllerConfig = {
+  type: string
+  validFields: string[]
+  validIncludes: string[]
+}
+
 export type JsonApiQuery = {
   fields?: KeyToStringMap
   include?: KeyToStringMap
 }
+
+export type JsonApiResponse = {
+  data: ResourceObject | ResourceObject[]
+  included?: ResourceObject | ResourceObject[]
+}
+
+export type JsonApiResponseBuilder = (
+  query: JsonApiQuery,
+  payload: RawDataPayload,
+) => JsonApiResponse
 
 export type ResourceBuilderConfig = {
   query: JsonApiQuery

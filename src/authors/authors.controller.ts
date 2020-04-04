@@ -7,10 +7,10 @@ import { AuthorsService } from './authors.service'
 @Controller('api/v1/authors')
 export class AuthorsController extends JsonApiController {
   constructor(private readonly svc: AuthorsService) {
-    super()
-
-    this.resourceName = 'author'
-    this.validFields = ['firstName', 'lastName', 'createdAt', 'updatedAt']
+    super({
+      type: 'author',
+      validFields: ['firstName', 'lastName', 'createdAt', 'updatedAt'],
+    })
   }
 
   @Get()

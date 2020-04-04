@@ -11,11 +11,11 @@ export class BooksController extends JsonApiController {
     private readonly svc: BooksService,
     private readonly authorsSvc: AuthorsService,
   ) {
-    super()
-
-    this.resourceName = 'book'
-    this.validFields = ['title', 'createdAt', 'updatedAt']
-    this.validIncludes = ['author']
+    super({
+      type: 'book',
+      validFields: ['title', 'createdAt', 'updatedAt'],
+      validIncludes: ['author'],
+    })
   }
 
   @Get()
