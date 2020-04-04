@@ -15,7 +15,7 @@ export class AuthorsController extends JsonApiController {
 
   @Get()
   async list(@Query() query: JsonApiQuery) {
-    const data = await this.svc.findAll()
+    const data = await this.svc.find()
     return super.list(query, { data })
   }
 

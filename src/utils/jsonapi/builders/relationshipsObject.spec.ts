@@ -74,4 +74,6 @@ describe('buildRelationshipsObject', () => {
       },
     })
   })
+
+  it.todo('returns "undefined" if there are no valid relationships')
 })

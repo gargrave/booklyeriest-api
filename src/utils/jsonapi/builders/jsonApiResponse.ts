@@ -10,7 +10,7 @@ import {
 import { buildResourceObject } from './resourceObject'
 import { omitIfEmpty } from '../utils'
 
-const getResponseData = (
+export const _getResponseData = (
   controllerConfig: JsonApiControllerConfig,
   query: JsonApiQuery,
   payload: RawDataPayload,
@@ -27,13 +27,13 @@ const getResponseData = (
   return rawData.map(dataBuilder)
 }
 
-const getResponseIncludedData = (
+export const _getResponseIncludedData = (
   controllerConfig: JsonApiControllerConfig,
   query: JsonApiQuery,
   payload: RawDataPayload,
 ): JsonApiDataset => {
   const { validIncludes } = controllerConfig
-  const { included: rawIncluded } = payload
+  const { included: rawIncluded = {} } = payload
   const { include = '' } = query
 
   const requestedIncludes = R.split(',', include)
@@ -43,7 +43,7 @@ const getResponseIncludedData = (
   )
 
   const mapIncludedData = (acc, key) => {
-    const includedDataset = rawIncluded[key]
+    const includedDataset = rawIncluded[key] || []
     const builder = buildResourceObject({
       query,
       type: key,
@@ -58,8 +58,8 @@ const getResponseIncludedData = (
 export const buildJsonApiResponse = (
   controllerConfig: JsonApiControllerConfig,
 ) => (query: JsonApiQuery, payload: RawDataPayload): JsonApiResponse => {
-  const data = getResponseData(controllerConfig, query, payload)
-  const included = getResponseIncludedData(controllerConfig, query, payload)
+  const data = _getResponseData(controllerConfig, query, payload)
+  const included = _getResponseIncludedData(controllerConfig, query, payload)
 
   return { data, included }
 }

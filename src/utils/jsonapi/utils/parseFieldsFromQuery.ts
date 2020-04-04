@@ -2,12 +2,12 @@ import * as R from 'ramda'
 
 import { JsonApiQuery } from '../jsonapi.types'
 
-export const parseFieldsFromQuery = (
+export function parseFieldsFromQuery<T = string[] | undefined>(
   query: JsonApiQuery,
   type: string,
-): string[] | undefined => {
+): T {
   const splitFields = R.split(',')
   const fieldsQuery = query.fields?.[type]
 
-  return fieldsQuery && splitFields(fieldsQuery)
+  return (fieldsQuery && (splitFields(fieldsQuery) as unknown)) as T
 }

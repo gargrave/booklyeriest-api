@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository, DeepPartial } from 'typeorm'
+import { Repository, DeepPartial, In } from 'typeorm'
+
+import { DbQueryOptions } from 'src/utils'
 
 import { Author } from './author.entity'
 
@@ -11,8 +13,16 @@ export class AuthorsService {
     private authorsRepo: Repository<Author>,
   ) {}
 
-  findAll(): Promise<Author[]> {
-    return this.authorsRepo.find()
+  find({ where }: DbQueryOptions = {}): Promise<Author[]> {
+    return this.authorsRepo.find({
+      where,
+    })
+  }
+
+  findByIds(ids: string[]): Promise<Author[]> {
+    return this.authorsRepo.find({
+      where: { id: In(ids) },
+    })
   }
 
   findOne(id: string): Promise<Author> {

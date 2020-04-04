@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository, DeepPartial } from 'typeorm'
 
 import { Author } from 'src/authors/author.entity'
+import { DbQueryOptions } from 'src/utils'
 
 import { Book } from './book.entity'
 
@@ -15,8 +16,10 @@ export class BooksService {
     private authorsRepo: Repository<Author>,
   ) {}
 
-  findAll(): Promise<Book[]> {
-    return this.booksRepo.find({ loadRelationIds: true })
+  find({}: DbQueryOptions = {}): Promise<Book[]> {
+    return this.booksRepo.find({
+      loadRelationIds: true,
+    })
   }
 
   findOne(id: string): Promise<Book> {
