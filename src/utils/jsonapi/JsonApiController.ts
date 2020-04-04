@@ -2,7 +2,7 @@ import { Get, Query } from '@nestjs/common'
 import * as R from 'ramda'
 
 import { JsonApiQuery } from './jsonapi.types'
-import { buildResourceObject } from './utils'
+import { buildResourceObject } from './builders'
 
 type RawDataPayload = {
   data: any

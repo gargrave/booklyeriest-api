@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 
-import { KeyToStringMap } from '../jsonapi.types'
+import { KeyToStringMap, RelationshipsObject } from '../jsonapi.types'
 
 const makeRelationship = (acc, [type, id]) => {
   acc[type] = { data: { id, type } }
@@ -14,7 +14,7 @@ const omitIfEmpty = R.ifElse(R.isEmpty, R.always(undefined), R.identity)
 
 export const buildRelationships = (
   relationshipsAttrs: KeyToStringMap,
-): KeyToStringMap => {
+): RelationshipsObject => {
   const reduceRelationships = R.reduce(makeRelationship, {})
   const processRelationships = R.pipe(reduceRelationships, omitIfEmpty)
 

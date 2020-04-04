@@ -1,10 +1,11 @@
 import * as R from 'ramda'
 
-import { ResourceBuilderConfig } from '../jsonapi.types'
-import { buildRelationships, parseQueryFields, splitAttrs } from '.'
+import { ResourceBuilderConfig, ResourceObject } from '../jsonapi.types'
+import { buildRelationships, parseQueryFields, splitAttrs } from '../utils'
 
+// TODO: what is the correct type of "obj" here?
 export const buildResourceObject = (config: ResourceBuilderConfig) => {
-  return (obj: any) => {
+  return (obj: any): ResourceObject => {
     const { query, type } = config
     const { id, ...allAttributes } = obj
 
