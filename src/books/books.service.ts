@@ -16,7 +16,7 @@ export class BooksService {
   ) {}
 
   findAll(): Promise<Book[]> {
-    return this.booksRepo.find()
+    return this.booksRepo.find({ loadRelationIds: true })
   }
 
   findOne(id: string): Promise<Book> {

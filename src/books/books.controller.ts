@@ -12,17 +12,23 @@ export class BooksController extends JsonApiController {
     private readonly authorsSvc: AuthorsService,
   ) {
     super()
+
     this.resourceName = 'book'
-    this.validFields = ['title', 'author', 'createdAt', 'updatedAt']
+    this.validFields = ['title', 'createdAt', 'updatedAt']
+    this.validIncludes = ['author']
   }
 
   @Get()
   async list(@Query() query: JsonApiQuery) {
     const data = await this.svc.findAll()
-    const relationships = await this.authorsSvc.findAll()
-    console.log({ relationships })
+    const author = await this.authorsSvc.findAll()
 
-    return super.list(query, { data, relationships })
+    return super.list(query, {
+      data,
+      included: {
+        author,
+      },
+    })
   }
 
   @Get(':id')

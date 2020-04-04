@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 
-import { JsonApiQuery } from './jsonapi.types'
+import { JsonApiQuery } from '../jsonapi.types'
 
 export const parseQueryFields = (
   query: JsonApiQuery,

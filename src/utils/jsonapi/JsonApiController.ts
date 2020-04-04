@@ -1,16 +1,18 @@
 import { Get, Query } from '@nestjs/common'
+import * as R from 'ramda'
 
-import { buildResourceObject } from './buildResourceObject'
 import { JsonApiQuery } from './jsonapi.types'
+import { buildResourceObject } from './utils'
 
 type RawDataPayload = {
   data: any
-  relationships?: any
+  included?: any
 }
 
 export abstract class JsonApiController {
   protected resourceName: string
-  protected validFields: string[]
+  protected validFields: string[] = []
+  protected validIncludes: string[] = []
 
   constructor() {
     //
@@ -18,12 +20,27 @@ export abstract class JsonApiController {
 
   @Get()
   async list(@Query() query: JsonApiQuery, rawDataPayload: RawDataPayload) {
-    const { data: rawData } = rawDataPayload
-    console.log({ query })
+    const { data: rawData, included: rawIncluded } = rawDataPayload
 
-    const builder = buildResourceObject(this.resourceName, query)
-    const data = rawData.map(builder)
+    const dataBuilder = buildResourceObject({
+      relationshipNames: this.validIncludes,
+      query,
+      type: this.resourceName,
+    })
+    const data = rawData.map(dataBuilder)
 
-    return { data }
+    const includedKeys = R.keys(rawIncluded) as string[]
+
+    const included = includedKeys.reduce((acc, key) => {
+      const builder = buildResourceObject({
+        query,
+        type: key,
+      })
+      const includedDataset = rawIncluded[key]
+
+      return acc.concat(includedDataset.map(builder))
+    }, [])
+
+    return { data, included }
   }
 }

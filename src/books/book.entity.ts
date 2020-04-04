@@ -18,8 +18,8 @@ export class Book {
   title: string
 
   @ManyToOne(
-    type => Author,
-    author => author.books,
+    (_type) => Author,
+    (author) => author.books,
     { nullable: false },
   )
   author: Author

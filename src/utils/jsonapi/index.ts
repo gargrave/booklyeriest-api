@@ -1,6 +1,2 @@
-export * from './buildRelationships'
-export * from './buildResourceObject'
 export * from './JsonApiController'
 export * from './jsonapi.types'
-export * from './parseQueryFields'
-export * from './splitAttrs'
