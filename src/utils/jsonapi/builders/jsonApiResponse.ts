@@ -1,37 +1,65 @@
 import * as R from 'ramda'
 
-import { buildResourceObject } from './resourceObject'
 import {
   JsonApiQuery,
   RawDataPayload,
   JsonApiControllerConfig,
+  JsonApiDataset,
   JsonApiResponse,
 } from '../jsonapi.types'
+import { buildResourceObject } from './resourceObject'
+import { omitIfEmpty } from '../utils'
 
-export const buildJsonApiResponse = (
+const getResponseData = (
   controllerConfig: JsonApiControllerConfig,
-) => (query: JsonApiQuery, payload: RawDataPayload): JsonApiResponse => {
-  const { type, validIncludes } = controllerConfig
-  const { data: rawData, included: rawIncluded } = payload
+  query: JsonApiQuery,
+  payload: RawDataPayload,
+): JsonApiDataset => {
+  const { relationshipNames, type } = controllerConfig
+  const { data: rawData } = payload
 
   const dataBuilder = buildResourceObject({
-    relationshipNames: validIncludes,
     query,
+    relationshipNames,
     type,
   })
-  const data = rawData.map(dataBuilder)
 
-  const includedKeys = R.keys(rawIncluded) as string[]
+  return rawData.map(dataBuilder)
+}
 
-  const included = includedKeys.reduce((acc, key) => {
+const getResponseIncludedData = (
+  controllerConfig: JsonApiControllerConfig,
+  query: JsonApiQuery,
+  payload: RawDataPayload,
+): JsonApiDataset => {
+  const { validIncludes } = controllerConfig
+  const { included: rawIncluded } = payload
+  const { include = '' } = query
+
+  const requestedIncludes = R.split(',', include)
+  const validRequestedIncludes = R.intersection(
+    requestedIncludes,
+    validIncludes,
+  )
+
+  const mapIncludedData = (acc, key) => {
+    const includedDataset = rawIncluded[key]
     const builder = buildResourceObject({
       query,
       type: key,
     })
-    const includedDataset = rawIncluded[key]
 
     return acc.concat(includedDataset.map(builder))
-  }, [])
+  }
+
+  return omitIfEmpty(R.reduce(mapIncludedData, [], validRequestedIncludes))
+}
+
+export const buildJsonApiResponse = (
+  controllerConfig: JsonApiControllerConfig,
+) => (query: JsonApiQuery, payload: RawDataPayload): JsonApiResponse => {
+  const data = getResponseData(controllerConfig, query, payload)
+  const included = getResponseIncludedData(controllerConfig, query, payload)
 
   return { data, included }
 }

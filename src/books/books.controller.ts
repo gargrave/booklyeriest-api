@@ -12,6 +12,7 @@ export class BooksController extends JsonApiController {
     private readonly authorsSvc: AuthorsService,
   ) {
     super({
+      relationshipNames: ['author'],
       type: 'book',
       validFields: ['title', 'createdAt', 'updatedAt'],
       validIncludes: ['author'],

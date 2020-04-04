@@ -11,7 +11,7 @@ import {
 
 type InitialConfig = PartiallyOptional<
   JsonApiControllerConfig,
-  'validFields' | 'validIncludes'
+  'relationshipNames' | 'validFields' | 'validIncludes'
 >
 
 export abstract class JsonApiController {
@@ -20,6 +20,7 @@ export abstract class JsonApiController {
 
   constructor(config: InitialConfig) {
     this.config = {
+      relationshipNames: config.relationshipNames || [],
       type: config.type,
       validFields: config.validFields || [],
       validIncludes: config.validIncludes || [],

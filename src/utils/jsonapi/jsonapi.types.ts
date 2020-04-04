@@ -67,6 +67,7 @@ export type RawDataPayload = {
 }
 
 export type JsonApiControllerConfig = {
+  relationshipNames: string[]
   type: string
   validFields: string[]
   validIncludes: string[]
@@ -74,12 +75,14 @@ export type JsonApiControllerConfig = {
 
 export type JsonApiQuery = {
   fields?: KeyToStringMap
-  include?: KeyToStringMap
+  include?: string
 }
 
+export type JsonApiDataset = ResourceObject | ResourceObject[]
+
 export type JsonApiResponse = {
-  data: ResourceObject | ResourceObject[]
-  included?: ResourceObject | ResourceObject[]
+  data: JsonApiDataset
+  included?: JsonApiDataset
 }
 
 export type JsonApiResponseBuilder = (

@@ -6,6 +6,7 @@ import {
   ResourceBuilderConfig,
   ResourceIdentifier,
 } from '../jsonapi.types'
+import { omitIfEmpty } from '../utils'
 
 const makeRelationship = (acc, [type, id]): ResourceIdentifier => {
   acc[type] = {
@@ -16,9 +17,6 @@ const makeRelationship = (acc, [type, id]): ResourceIdentifier => {
 
 /** Converts an "relationships" map object into a comma-separate string of the keys therein */
 const joinRelations = R.pipe(R.keys, R.join(','))
-
-/** Returns the value directly if it passes a "not empty" check; otherwise returns undefined */
-const omitIfEmpty = R.ifElse(R.isEmpty, R.always(undefined), R.identity)
 
 /**
  * Returns a JSON:API formatted "Relationships Object" based on the specified relationships in the provided data.
