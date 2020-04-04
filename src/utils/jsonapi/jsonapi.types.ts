@@ -1,5 +1,3 @@
-type ValidJsonValue = string | number | boolean | any[] | {}
-
 /**************************************************
  * JSON:API Spec Types
  **************************************************/
@@ -38,10 +36,21 @@ export type ResourceObject = ResourceIdentifier & {
 }
 
 /**************************************************
- * Utility types
+ * Utility Types
  **************************************************/
-export type KeyToStringMap = {
+type ValidJsonValue = string | number | boolean | any[] | {}
+
+type KeyToStringMap = {
   [key: string]: string
+}
+
+export type JsonMap = {
+  [key: string]: ValidJsonValue
+}
+
+export type RawResource = {
+  id: string
+  [key: string]: ValidJsonValue
 }
 
 export type JsonApiQuery = {

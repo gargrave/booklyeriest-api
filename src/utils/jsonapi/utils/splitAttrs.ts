@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 
-import { KeyToStringMap, ResourceBuilderConfig } from '../jsonapi.types'
+import { JsonMap, ResourceBuilderConfig } from '../jsonapi.types'
 
 /**
  * Takes all of an object's "attributes" and splits them into two sets:
@@ -11,8 +11,8 @@ import { KeyToStringMap, ResourceBuilderConfig } from '../jsonapi.types'
  */
 export const splitAttrs = (
   config: ResourceBuilderConfig,
-  allAttrs: KeyToStringMap,
-): [KeyToStringMap, KeyToStringMap] => {
+  allAttrs: JsonMap,
+): [JsonMap, JsonMap] => {
   const { relationshipNames = [] } = config
 
   return [
