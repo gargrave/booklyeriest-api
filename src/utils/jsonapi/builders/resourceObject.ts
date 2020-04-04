@@ -1,7 +1,8 @@
 import * as R from 'ramda'
 
 import { ResourceBuilderConfig, ResourceObject } from '../jsonapi.types'
-import { buildRelationships, parseQueryFields, splitAttrs } from '../utils'
+import { parseFieldsFromQuery, splitAttrs } from '../utils'
+import { buildRelationshipsObject } from './relationshipsObject'
 
 // TODO: what is the correct type of "obj" here?
 export const buildResourceObject = (config: ResourceBuilderConfig) => {
@@ -10,10 +11,10 @@ export const buildResourceObject = (config: ResourceBuilderConfig) => {
     const { id, ...allAttributes } = obj
 
     const [ownAttrs, relationshipsAttrs] = splitAttrs(config, allAttributes)
-    const fields = parseQueryFields(query, type) || R.keys(allAttributes)
+    const fields = parseFieldsFromQuery(query, type) || R.keys(allAttributes)
     const attributes = R.pick(fields as any, ownAttrs)
 
-    const relationships = buildRelationships(relationshipsAttrs as any)
+    const relationships = buildRelationshipsObject(relationshipsAttrs as any)
 
     return {
       id,

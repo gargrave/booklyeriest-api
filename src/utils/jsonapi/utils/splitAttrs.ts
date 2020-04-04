@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 
-import { ResourceBuilderConfig, KeyToStringMap } from '../jsonapi.types'
+import { KeyToStringMap, ResourceBuilderConfig } from '../jsonapi.types'
 
 /**
  * Takes all of an object's "attributes" and splits them into two sets:

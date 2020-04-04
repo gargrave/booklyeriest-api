@@ -2,7 +2,7 @@ import * as R from 'ramda'
 
 import { JsonApiQuery } from '../jsonapi.types'
 
-export const parseQueryFields = (
+export const parseFieldsFromQuery = (
   query: JsonApiQuery,
   type: string,
 ): string[] | undefined => {

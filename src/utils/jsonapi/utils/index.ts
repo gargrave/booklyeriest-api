@@ -1,3 +1,2 @@
-export * from './buildRelationships'
-export * from './parseQueryFields'
+export * from './parseFieldsFromQuery'
 export * from './splitAttrs'
