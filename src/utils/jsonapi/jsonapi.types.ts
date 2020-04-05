@@ -71,11 +71,12 @@ export type JsonApiInterceptorConfig = {
   type: string
   validFields: string[]
   validIncludes: string[]
+  writeableFields: string[]
 }
 
 export type JsonApiControllerConfig = PartiallyOptional<
   JsonApiInterceptorConfig,
-  'relationshipNames' | 'validFields' | 'validIncludes'
+  'relationshipNames' | 'validFields' | 'validIncludes' | 'writeableFields'
 >
 
 export type JsonApiQuery = {

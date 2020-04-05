@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
+import * as R from 'ramda'
 
 import { buildJsonApiResponse } from './builders'
 import {
@@ -14,9 +15,9 @@ import {
   JsonApiResponseBuilder,
 } from './jsonapi.types'
 
-/**
- * An interceptor to convert basic API responses into properly-formatted JSON:API responses.
- */
+const WRITE_REQUESTS = ['POST', 'PUT', 'PATCH']
+const isWriteRequest = R.flip(R.includes)(WRITE_REQUESTS)
+
 @Injectable()
 export class JsonApiInterceptor implements NestInterceptor {
   protected config: JsonApiInterceptorConfig
@@ -28,13 +29,37 @@ export class JsonApiInterceptor implements NestInterceptor {
       type: partialConfig.type,
       validFields: partialConfig.validFields || [],
       validIncludes: partialConfig.validIncludes || [],
+      writeableFields: partialConfig.writeableFields || [],
     }
 
     this.buildResponse = buildJsonApiResponse(this.config)
   }
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const query = context.switchToHttp().getRequest().query
+    const request = context.switchToHttp().getRequest()
+    const { method, query } = request
+
+    if (isWriteRequest(method)) {
+      const { attributes } = request.body.data
+      const { relationships = {} } = request.body
+
+      const flattenRelationKeys = (acc, key) => {
+        acc[key] = relationships[key].data.id
+        return acc
+      }
+
+      const writeableFields = R.pick(this.config.writeableFields, attributes)
+
+      const writeableRelations = R.pipe(
+        R.reduce(flattenRelationKeys, {}),
+        R.pick(this.config.relationshipNames),
+      )(R.keys(relationships))
+
+      request.body = {
+        ...writeableFields,
+        ...writeableRelations,
+      }
+    }
 
     return next.handle().pipe(
       map((response) => {

@@ -19,6 +19,7 @@ const jsonApiConfig: JsonApiControllerConfig = {
   type: 'book',
   validFields: ['title', 'createdAt', 'updatedAt'],
   validIncludes: ['author'],
+  writeableFields: ['title'],
 }
 
 @Controller('api/v1/books')
@@ -62,10 +63,10 @@ export class BooksController {
 
   @Post()
   async create(@Body() body) {
-    const book = await this.booksSvc.create(body)
+    const data = await this.booksSvc.create(body)
 
     return {
-      data: book,
+      data,
     }
   }
 }

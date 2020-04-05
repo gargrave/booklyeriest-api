@@ -13,6 +13,7 @@ import { AuthorsService } from './authors.service'
 const jsonApiConfig: JsonApiControllerConfig = {
   type: 'author',
   validFields: ['firstName', 'lastName', 'createdAt', 'updatedAt'],
+  writeableFields: ['firstName', 'lastName'],
 }
 
 @Controller('api/v1/authors')
@@ -37,8 +38,8 @@ export class AuthorsController {
 
   @Post()
   async create(@Body() body) {
-    const author = await this.authorsSvc.create(body)
+    const data = await this.authorsSvc.create(body)
 
-    return { data: author }
+    return { data }
   }
 }
