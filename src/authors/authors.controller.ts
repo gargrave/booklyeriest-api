@@ -1,40 +1,44 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseInterceptors,
+} from '@nestjs/common'
 
-import { JsonApiController, JsonApiQuery } from 'src/utils/jsonapi'
-
+import { JsonApiControllerConfig, JsonApiInterceptor } from 'src/utils/jsonapi'
 import { AuthorsService } from './authors.service'
 
+const jsonApiConfig: JsonApiControllerConfig = {
+  type: 'author',
+  validFields: ['firstName', 'lastName', 'createdAt', 'updatedAt'],
+}
+
 @Controller('api/v1/authors')
-export class AuthorsController extends JsonApiController {
-  constructor(private readonly svc: AuthorsService) {
-    super({
-      type: 'author',
-      validFields: ['firstName', 'lastName', 'createdAt', 'updatedAt'],
-    })
-  }
+@UseInterceptors(new JsonApiInterceptor(jsonApiConfig))
+export class AuthorsController {
+  constructor(private readonly svc: AuthorsService) {}
 
   @Get()
-  async list(@Query() query: JsonApiQuery) {
+  async list() {
     const data = await this.svc.find()
-    return super.list(query, { data })
+
+    return { data } as any
   }
 
   @Get(':id')
   async detail(@Param() params) {
     const { id } = params
-    const author = await this.svc.findOne(id)
+    const data = await this.svc.findOne(id)
 
-    return {
-      data: author,
-    }
+    return { data }
   }
 
   @Post()
   async create(@Body() body) {
     const author = await this.svc.create(body)
 
-    return {
-      data: author,
-    }
+    return { data: author }
   }
 }

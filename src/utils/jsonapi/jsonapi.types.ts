@@ -66,12 +66,17 @@ export type RawDataPayload = {
   included?: any
 }
 
-export type JsonApiControllerConfig = {
+export type JsonApiInterceptorConfig = {
   relationshipNames: string[]
   type: string
   validFields: string[]
   validIncludes: string[]
 }
+
+export type JsonApiControllerConfig = PartiallyOptional<
+  JsonApiInterceptorConfig,
+  'relationshipNames' | 'validFields' | 'validIncludes'
+>
 
 export type JsonApiQuery = {
   fields?: KeyToStringMap

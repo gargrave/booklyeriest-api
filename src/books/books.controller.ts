@@ -1,40 +1,47 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseInterceptors,
+} from '@nestjs/common'
 import * as R from 'ramda'
 
 import { AuthorsService } from 'src/authors'
-import { JsonApiController, JsonApiQuery } from 'src/utils/jsonapi'
-
+import { JsonApiControllerConfig, JsonApiInterceptor } from 'src/utils/jsonapi'
 import { BooksService } from './books.service'
 
 const getUniqueAuthorIds = R.pipe(R.pluck('author'), R.uniq)
 
+const jsonApiConfig: JsonApiControllerConfig = {
+  relationshipNames: ['author'],
+  type: 'book',
+  validFields: ['title', 'createdAt', 'updatedAt'],
+  validIncludes: ['author'],
+}
+
 @Controller('api/v1/books')
-export class BooksController extends JsonApiController {
+@UseInterceptors(new JsonApiInterceptor(jsonApiConfig))
+export class BooksController {
   constructor(
     private readonly booksSvc: BooksService,
     private readonly authorsSvc: AuthorsService,
-  ) {
-    super({
-      relationshipNames: ['author'],
-      type: 'book',
-      validFields: ['title', 'createdAt', 'updatedAt'],
-      validIncludes: ['author'],
-    })
-  }
+  ) {}
 
   @Get()
-  async list(@Query() query: JsonApiQuery) {
+  async list() {
     const data = await this.booksSvc.find()
 
     const authorIds = (getUniqueAuthorIds(data) as unknown) as string[]
     const includedAuthors = await this.authorsSvc.findByIds(authorIds)
 
-    return super.list(query, {
+    return {
       data,
       included: {
         author: includedAuthors,
       },
-    })
+    }
   }
 
   @Get(':id')
@@ -42,9 +49,7 @@ export class BooksController extends JsonApiController {
     const { id } = params
     const book = await this.booksSvc.findOne(id)
 
-    return {
-      data: book,
-    }
+    return { data: book }
   }
 
   @Post()
