@@ -15,8 +15,10 @@ import {
   JsonApiResponseBuilder,
 } from './jsonapi.types'
 
-const WRITE_REQUESTS = ['POST', 'PUT', 'PATCH']
-const isWriteRequest = R.flip(R.includes)(WRITE_REQUESTS)
+const MODIFYABLE_REQUEST_TYPES = ['POST', 'PUT', 'PATCH']
+const MODIFYABLE_RESPONSE_TYPES = ['GET', 'POST', 'PUT', 'PATCH']
+const shouldModifyRequest = R.flip(R.includes)(MODIFYABLE_REQUEST_TYPES)
+const shouldModifyResponse = R.flip(R.includes)(MODIFYABLE_RESPONSE_TYPES)
 
 @Injectable()
 export class JsonApiInterceptor implements NestInterceptor {
@@ -39,7 +41,10 @@ export class JsonApiInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest()
     const { method, query } = request
 
-    if (isWriteRequest(method)) {
+    const updateRequest = shouldModifyRequest(method)
+    const updateResponse = shouldModifyResponse(method)
+
+    if (updateRequest) {
       const { attributes } = request.body.data
       const { relationships = {} } = request.body
 
@@ -63,7 +68,7 @@ export class JsonApiInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       map((response) => {
-        return this.buildResponse(query, response)
+        return updateResponse ? this.buildResponse(query, response) : response
       }),
     )
   }

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -41,5 +42,12 @@ export class AuthorsController {
     const data = await this.authorsSvc.create(body)
 
     return { data }
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string) {
+    const data = await this.authorsSvc.delete(id)
+
+    return data
   }
 }

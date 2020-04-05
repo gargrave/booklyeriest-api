@@ -20,9 +20,8 @@ export class Author {
   lastName: string
 
   @OneToMany(
-    type => Book,
-    book => book.author,
-    { onDelete: 'CASCADE' },
+    (type) => Book,
+    (book) => book.author,
   )
   books: Book[]
 

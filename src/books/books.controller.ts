@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -68,5 +69,12 @@ export class BooksController {
     return {
       data,
     }
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string) {
+    const data = await this.booksSvc.delete(id)
+
+    return data
   }
 }

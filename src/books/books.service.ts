@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository, DeepPartial } from 'typeorm'
+import { Repository, DeepPartial, DeleteResult } from 'typeorm'
 
 import { Author } from 'src/authors/author.entity'
 import { DbQueryOptions } from 'src/utils'
@@ -36,5 +36,9 @@ export class BooksService {
     book.author = author
 
     return this.booksRepo.save(book)
+  }
+
+  delete(id: string): Promise<DeleteResult> {
+    return this.booksRepo.delete(id)
   }
 }

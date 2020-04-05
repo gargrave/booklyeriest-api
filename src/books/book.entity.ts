@@ -20,7 +20,7 @@ export class Book {
   @ManyToOne(
     (_type) => Author,
     (author) => author.books,
-    { nullable: false },
+    { onDelete: 'CASCADE', nullable: false },
   )
   author: Author
 
