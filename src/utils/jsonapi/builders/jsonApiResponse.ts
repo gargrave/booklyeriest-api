@@ -8,7 +8,7 @@ import {
   JsonApiResponse,
 } from '../jsonapi.types'
 import { buildResourceObject } from './resourceObject'
-import { omitIfEmpty } from '../utils'
+import { mapIfArray, omitIfEmpty } from '../utils'
 
 export const _getResponseData = (
   controllerConfig: JsonApiControllerConfig,
@@ -17,14 +17,17 @@ export const _getResponseData = (
 ): JsonApiDataset => {
   const { relationshipNames, type } = controllerConfig
   const { data: rawData } = payload
+  console.log({ rawData })
 
-  const dataBuilder = buildResourceObject({
-    query,
-    relationshipNames,
-    type,
-  })
+  const dataBuilder = mapIfArray(
+    buildResourceObject({
+      query,
+      relationshipNames,
+      type,
+    }),
+  )
 
-  return rawData.map(dataBuilder)
+  return dataBuilder(rawData)
 }
 
 export const _getResponseIncludedData = (
@@ -35,6 +38,7 @@ export const _getResponseIncludedData = (
   const { validIncludes } = controllerConfig
   const { included: rawIncluded = {} } = payload
   const { include = '' } = query
+  console.log({ rawIncluded })
 
   const requestedIncludes = R.split(',', include)
   const validRequestedIncludes = R.intersection(
@@ -48,6 +52,7 @@ export const _getResponseIncludedData = (
       query,
       type: key,
     })
+    console.log({ includedDataset })
 
     return acc.concat(includedDataset.map(builder))
   }

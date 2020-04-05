@@ -47,9 +47,17 @@ export class BooksController {
   @Get(':id')
   async detail(@Param() params) {
     const { id } = params
-    const book = await this.booksSvc.findOne(id)
+    const data = await this.booksSvc.findOne(id)
 
-    return { data: book }
+    const authorIds = (getUniqueAuthorIds([data]) as unknown) as string[]
+    const includedAuthors = await this.authorsSvc.findByIds(authorIds)
+
+    return {
+      data,
+      included: {
+        author: includedAuthors,
+      },
+    }
   }
 
   @Post()

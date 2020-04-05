@@ -18,26 +18,26 @@ const jsonApiConfig: JsonApiControllerConfig = {
 @Controller('api/v1/authors')
 @UseInterceptors(new JsonApiInterceptor(jsonApiConfig))
 export class AuthorsController {
-  constructor(private readonly svc: AuthorsService) {}
+  constructor(private readonly authorsSvc: AuthorsService) {}
 
   @Get()
   async list() {
-    const data = await this.svc.find()
+    const data = await this.authorsSvc.find()
 
-    return { data } as any
+    return { data }
   }
 
   @Get(':id')
   async detail(@Param() params) {
     const { id } = params
-    const data = await this.svc.findOne(id)
+    const data = await this.authorsSvc.findOne(id)
 
     return { data }
   }
 
   @Post()
   async create(@Body() body) {
-    const author = await this.svc.create(body)
+    const author = await this.authorsSvc.create(body)
 
     return { data: author }
   }

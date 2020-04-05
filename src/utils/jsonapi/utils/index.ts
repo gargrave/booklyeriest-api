@@ -1,3 +1,3 @@
-export * from './miscUtils'
+export * from './misc.utils'
 export * from './parseFieldsFromQuery'
 export * from './splitAttrs'

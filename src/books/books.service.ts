@@ -23,7 +23,9 @@ export class BooksService {
   }
 
   findOne(id: string): Promise<Book> {
-    return this.booksRepo.findOne(id)
+    return this.booksRepo.findOne(id, {
+      loadRelationIds: true,
+    })
   }
 
   async create(body: DeepPartial<Book>): Promise<Book> {
