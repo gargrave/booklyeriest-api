@@ -4,12 +4,15 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
+  UseFilters,
   UseInterceptors,
 } from '@nestjs/common'
 
 import { JsonApiControllerConfig, JsonApiInterceptor } from 'src/utils/jsonapi'
 import { AuthorsService } from './authors.service'
+import { JsonApiExceptionFilter } from 'src/utils/jsonapi/jsonapiException.filter'
 
 const jsonApiConfig: JsonApiControllerConfig = {
   type: 'author',
@@ -18,6 +21,7 @@ const jsonApiConfig: JsonApiControllerConfig = {
 }
 
 @Controller('api/v1/authors')
+@UseFilters(JsonApiExceptionFilter)
 @UseInterceptors(new JsonApiInterceptor(jsonApiConfig))
 export class AuthorsController {
   constructor(private readonly authorsSvc: AuthorsService) {}
@@ -40,6 +44,13 @@ export class AuthorsController {
   @Post()
   async create(@Body() body) {
     const data = await this.authorsSvc.create(body)
+
+    return { data }
+  }
+
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() body) {
+    const data = await this.authorsSvc.update(id, body)
 
     return { data }
   }

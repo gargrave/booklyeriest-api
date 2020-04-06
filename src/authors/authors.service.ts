@@ -20,9 +20,7 @@ export class AuthorsService {
   }
 
   findByIds(ids: string[]): Promise<Author[]> {
-    return this.authorsRepo.find({
-      where: { id: In(ids) },
-    })
+    return this.authorsRepo.findByIds(ids)
   }
 
   findOne(id: string): Promise<Author> {
@@ -35,6 +33,16 @@ export class AuthorsService {
     author.lastName = body.lastName
 
     return this.authorsRepo.save(author)
+  }
+
+  async update(id: string, body: DeepPartial<Author>): Promise<Author> {
+    const author = await this.authorsRepo.findOneOrFail(id)
+    const updatedAuthor = {
+      ...author,
+      ...body,
+    }
+
+    return this.authorsRepo.save(updatedAuthor)
   }
 
   delete(id: string): Promise<DeleteResult> {

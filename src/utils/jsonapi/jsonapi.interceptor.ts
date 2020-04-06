@@ -1,6 +1,8 @@
 import {
   CallHandler,
   ExecutionContext,
+  HttpException,
+  HttpStatus,
   Injectable,
   NestInterceptor,
 } from '@nestjs/common'
@@ -14,6 +16,8 @@ import {
   JsonApiInterceptorConfig,
   JsonApiResponseBuilder,
 } from './jsonapi.types'
+import { JsonApiException } from './exceptions/jsonapi.exception'
+import { InvalidAttributeException } from './exceptions'
 
 const MODIFYABLE_REQUEST_TYPES = ['POST', 'PUT', 'PATCH']
 const MODIFYABLE_RESPONSE_TYPES = ['GET', 'POST', 'PUT', 'PATCH']
@@ -40,6 +44,7 @@ export class JsonApiInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest()
     const { method, query } = request
+    const { type } = this.config
 
     const updateRequest = shouldModifyRequest(method)
     const updateResponse = shouldModifyResponse(method)
@@ -53,8 +58,15 @@ export class JsonApiInterceptor implements NestInterceptor {
         return acc
       }
 
-      const writeableFields = R.pick(this.config.writeableFields, attributes)
+      const invalidFields = R.difference(
+        R.keys(attributes) as string[],
+        this.config.writeableFields,
+      )
+      if (invalidFields.length) {
+        throw new InvalidAttributeException(invalidFields, type)
+      }
 
+      const writeableFields = R.pick(this.config.writeableFields, attributes)
       const writeableRelations = R.pipe(
         R.reduce(flattenRelationKeys, {}),
         R.pick(this.config.relationshipNames),
