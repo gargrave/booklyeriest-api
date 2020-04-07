@@ -40,13 +40,11 @@ export class BooksService {
 
   async update(id: string, body: DeepPartial<Book>): Promise<Book> {
     const book = await this.booksRepo.findOneOrFail(id)
-    // const author = await this.authorsRepo.findOneOrFail(id)
 
     const updatedBook = {
       ...book,
       ...body,
     }
-    console.log({ updatedBook })
 
     return this.booksRepo.save(updatedBook)
   }

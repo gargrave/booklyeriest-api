@@ -10,9 +10,12 @@ import {
   UseInterceptors,
 } from '@nestjs/common'
 
-import { JsonApiControllerConfig, JsonApiInterceptor } from 'src/utils/jsonapi'
+import {
+  JsonApiControllerConfig,
+  JsonApiInterceptor,
+  JsonApiExceptionFilter,
+} from 'src/utils/jsonapi'
 import { AuthorsService } from './authors.service'
-import { JsonApiExceptionFilter } from 'src/utils/jsonapi/jsonapiException.filter'
 
 const jsonApiConfig: JsonApiControllerConfig = {
   type: 'author',

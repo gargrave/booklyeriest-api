@@ -8,13 +8,13 @@ import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import * as R from 'ramda'
 
-import { buildJsonApiResponse } from './builders'
+import { buildJsonApiResponse } from '../builders'
+import { InvalidAttributeException } from '../exceptions'
 import {
   JsonApiControllerConfig,
   JsonApiInterceptorConfig,
   JsonApiResponseBuilder,
-} from './jsonapi.types'
-import { InvalidAttributeException } from './exceptions'
+} from '../jsonapi.types'
 
 const MODIFYABLE_REQUEST_TYPES = ['POST', 'PUT', 'PATCH']
 const MODIFYABLE_RESPONSE_TYPES = ['GET', 'POST', 'PUT', 'PATCH']

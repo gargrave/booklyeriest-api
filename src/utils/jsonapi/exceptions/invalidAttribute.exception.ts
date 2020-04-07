@@ -1,5 +1,6 @@
-import { JsonApiException } from './jsonapi.exception'
 import { HttpStatus } from '@nestjs/common'
+
+import { JsonApiException } from './jsonapi.exception'
 
 export class InvalidAttributeException extends JsonApiException {
   constructor(attributes: string[], type: string) {
