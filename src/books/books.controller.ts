@@ -4,16 +4,30 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   UseInterceptors,
 } from '@nestjs/common'
 import * as R from 'ramda'
 
 import { AuthorsService } from 'src/authors'
-import { JsonApiControllerConfig, JsonApiInterceptor } from 'src/utils/jsonapi'
+import {
+  ensureArray,
+  JsonApiControllerConfig,
+  JsonApiInterceptor,
+} from 'src/utils/jsonapi'
+
+import { Book } from './book.entity'
 import { BooksService } from './books.service'
 
 const getUniqueAuthorIds = R.pipe(R.pluck('author'), R.uniq)
+
+const getIncludedAuthors = (service: AuthorsService, data: Book | Book[]) => {
+  const dataArr = ensureArray(data)
+  const authorIds = (getUniqueAuthorIds(dataArr) as unknown) as string[]
+
+  return service.findByIds(authorIds)
+}
 
 const jsonApiConfig: JsonApiControllerConfig = {
   relationshipNames: ['author'],
@@ -34,9 +48,7 @@ export class BooksController {
   @Get()
   async list() {
     const data = await this.booksSvc.find()
-
-    const authorIds = (getUniqueAuthorIds(data) as unknown) as string[]
-    const includedAuthors = await this.authorsSvc.findByIds(authorIds)
+    const includedAuthors = await getIncludedAuthors(this.authorsSvc, data)
 
     return {
       data,
@@ -50,9 +62,7 @@ export class BooksController {
   async detail(@Param() params) {
     const { id } = params
     const data = await this.booksSvc.findOne(id)
-
-    const authorIds = (getUniqueAuthorIds([data]) as unknown) as string[]
-    const includedAuthors = await this.authorsSvc.findByIds(authorIds)
+    const includedAuthors = await getIncludedAuthors(this.authorsSvc, data)
 
     return {
       data,
@@ -65,9 +75,26 @@ export class BooksController {
   @Post()
   async create(@Body() body) {
     const data = await this.booksSvc.create(body)
+    const includedAuthors = await getIncludedAuthors(this.authorsSvc, data)
 
     return {
       data,
+      included: {
+        author: includedAuthors,
+      },
+    }
+  }
+
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() body) {
+    const data = await this.booksSvc.update(id, body)
+    const includedAuthors = await getIncludedAuthors(this.authorsSvc, data)
+
+    return {
+      data,
+      included: {
+        author: includedAuthors,
+      },
     }
   }
 

@@ -11,7 +11,7 @@ import { Book } from 'src/books/book.entity'
 @Entity()
 export class Author {
   @PrimaryGeneratedColumn('uuid')
-  id: number
+  id: string
 
   @Column({ length: 255 })
   firstName: string

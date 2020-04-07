@@ -11,3 +11,10 @@ export const omitIfEmpty = R.ifElse(R.isEmpty, R.always(undefined), R.identity)
  * second call is the actual value you want to to use.
  */
 export const mapIfArray = R.ifElse(R.flip(R.is(Array)), R.map, R.call)
+
+/**
+ * Returns an Array of the provided value.
+ * - If the value is already an Array, it will return it directly
+ * - If the value is not an Array, it will return the value as a single-index Array
+ */
+export const ensureArray = R.ifElse(R.is(Array), R.identity, (x) => [x])

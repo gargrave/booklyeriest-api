@@ -1,8 +1,6 @@
 import {
   CallHandler,
   ExecutionContext,
-  HttpException,
-  HttpStatus,
   Injectable,
   NestInterceptor,
 } from '@nestjs/common'
@@ -16,7 +14,6 @@ import {
   JsonApiInterceptorConfig,
   JsonApiResponseBuilder,
 } from './jsonapi.types'
-import { JsonApiException } from './exceptions/jsonapi.exception'
 import { InvalidAttributeException } from './exceptions'
 
 const MODIFYABLE_REQUEST_TYPES = ['POST', 'PUT', 'PATCH']
@@ -58,6 +55,7 @@ export class JsonApiInterceptor implements NestInterceptor {
         return acc
       }
 
+      // TODO: consider moving field validation to a pipe
       const invalidFields = R.difference(
         R.keys(attributes) as string[],
         this.config.writeableFields,

@@ -30,12 +30,25 @@ export class BooksService {
 
   async create(body: DeepPartial<Book>): Promise<Book> {
     const book = new Book()
-    const author = await this.authorsRepo.findOne(body.author)
+    const author = await this.authorsRepo.findOneOrFail(body.author)
 
     book.title = body.title
     book.author = author
 
     return this.booksRepo.save(book)
+  }
+
+  async update(id: string, body: DeepPartial<Book>): Promise<Book> {
+    const book = await this.booksRepo.findOneOrFail(id)
+    // const author = await this.authorsRepo.findOneOrFail(id)
+
+    const updatedBook = {
+      ...book,
+      ...body,
+    }
+    console.log({ updatedBook })
+
+    return this.booksRepo.save(updatedBook)
   }
 
   delete(id: string): Promise<DeleteResult> {

@@ -1,4 +1,4 @@
-import { mapIfArray } from './misc.utils'
+import { ensureArray, mapIfArray } from './misc.utils'
 
 describe('Misc Utils', () => {
   describe('mapIfEmpty', () => {
@@ -20,6 +20,23 @@ describe('Misc Utils', () => {
       values.forEach((value, idx) => {
         expect(mockFn).toHaveBeenNthCalledWith(idx + 1, value)
       })
+    })
+  })
+
+  describe('ensureArray', () => {
+    it('returns an existing Array directly, with no changes', () => {
+      const orig = [1, 2, 3]
+      const result = ensureArray(orig)
+
+      expect(result).toBe(orig)
+      expect(result).toEqual(orig)
+    })
+
+    it('returns a non-Array value as a new Array', () => {
+      const obj = { id: '123', name: 'Billy Pickles' }
+      const result = ensureArray(obj)
+
+      expect(result).toEqual([obj])
     })
   })
 })
