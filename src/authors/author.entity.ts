@@ -13,10 +13,10 @@ export class Author {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
-  @Column({ length: 255 })
+  @Column({ length: 255, nullable: false })
   firstName: string
 
-  @Column({ length: 255 })
+  @Column({ length: 255, nullable: false })
   lastName: string
 
   @OneToMany(

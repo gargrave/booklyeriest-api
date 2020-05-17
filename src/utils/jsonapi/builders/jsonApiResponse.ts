@@ -6,6 +6,7 @@ import {
   JsonApiControllerConfig,
   JsonApiDataset,
   JsonApiResponse,
+  JsonApiRequest,
 } from '../jsonapi.types'
 import { buildResourceObject } from './resourceObject'
 import { mapIfArray, omitIfEmpty } from '../utils'
@@ -59,7 +60,15 @@ export const _getResponseIncludedData = (
 
 export const buildJsonApiResponse = (
   controllerConfig: JsonApiControllerConfig,
-) => (query: JsonApiQuery, payload: RawDataPayload): JsonApiResponse => {
+) => (request: JsonApiRequest, payload: RawDataPayload): JsonApiResponse => {
+  const { method, params, query } = request
+
+  if (method === 'DELETE') {
+    return {
+      meta: { id: params.id },
+    }
+  }
+
   const data = _getResponseData(controllerConfig, query, payload)
   const included = _getResponseIncludedData(controllerConfig, query, payload)
 

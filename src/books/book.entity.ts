@@ -14,7 +14,7 @@ export class Book {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
-  @Column({ length: 255 })
+  @Column({ length: 255, nullable: false })
   title: string
 
   @ManyToOne(

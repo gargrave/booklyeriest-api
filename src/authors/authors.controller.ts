@@ -62,6 +62,6 @@ export class AuthorsController {
   async delete(@Param('id') id: string) {
     const data = await this.authorsSvc.delete(id)
 
-    return data
+    return { data }
   }
 }

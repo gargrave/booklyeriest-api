@@ -17,7 +17,7 @@ import {
 } from '../jsonapi.types'
 
 const MODIFYABLE_REQUEST_TYPES = ['POST', 'PUT', 'PATCH']
-const MODIFYABLE_RESPONSE_TYPES = ['GET', 'POST', 'PUT', 'PATCH']
+const MODIFYABLE_RESPONSE_TYPES = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
 const shouldModifyRequest = R.flip(R.includes)(MODIFYABLE_REQUEST_TYPES)
 const shouldModifyResponse = R.flip(R.includes)(MODIFYABLE_RESPONSE_TYPES)
 
@@ -40,11 +40,10 @@ export class JsonApiInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest()
-    const { method, query } = request
     const { type } = this.config
 
-    const updateRequest = shouldModifyRequest(method)
-    const updateResponse = shouldModifyResponse(method)
+    const updateRequest = shouldModifyRequest(request.method)
+    const updateResponse = shouldModifyResponse(request.method)
 
     if (updateRequest) {
       const { attributes } = request.body.data
@@ -78,7 +77,7 @@ export class JsonApiInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       map((response) => {
-        return updateResponse ? this.buildResponse(query, response) : response
+        return updateResponse ? this.buildResponse(request, response) : response
       }),
     )
   }

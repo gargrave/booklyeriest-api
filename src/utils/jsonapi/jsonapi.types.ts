@@ -79,6 +79,12 @@ export type JsonApiControllerConfig = PartiallyOptional<
   'relationshipNames' | 'validFields' | 'validIncludes' | 'writeableFields'
 >
 
+export type JsonApiRequest = {
+  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  params: { [key: string]: string }
+  query: JsonApiQuery
+}
+
 export type JsonApiQuery = {
   fields?: KeyToStringMap
   include?: string
@@ -87,12 +93,13 @@ export type JsonApiQuery = {
 export type JsonApiDataset = ResourceObject | ResourceObject[]
 
 export type JsonApiResponse = {
-  data: JsonApiDataset
+  data?: JsonApiDataset
   included?: JsonApiDataset
+  meta?: {}
 }
 
 export type JsonApiResponseBuilder = (
-  query: JsonApiQuery,
+  request: JsonApiRequest,
   payload: RawDataPayload,
 ) => JsonApiResponse
 
